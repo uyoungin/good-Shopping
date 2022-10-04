@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CartMapper">
+
+	<!-- 장바구니 담기 -->
+	<insert id="cartAdd" parameterType="CartDTO"> 
+		insert into cart 
+		values (cart_seq.nextval,#{userid},#{gCode},#{gName},#{gPrice},
+				#{gSize},#{gColor},#{gAmount},#{gImage})
+	</insert>
+	
+	<!-- 장바구니 목록 -->
+	<select id="cartList" parameterType="String" resultType="CartDTO">
+		select * from cart where userid = #{userid}
+	</select>
+	
+	<!-- 장바구니 수량 수정 -->
+	<update id="cartUpdate" parameterType="hashmap">
+		update cart set gAmount = #{gAmount}
+		where num = #{num}
+	</update>
+	
+	<!-- 장바구니 상품 개별 삭제 -->
+	<delete id="cartDelete" parameterType="int">
+		delete from cart where num = #{num}
+	</delete>
+	
+	<!-- 장바구니 상품 전체 삭제 -->
+	<delete id="delAllCart" parameterType="arraylist">
+		delete from cart where num in
+		<foreach item="x" collection="list" open="(" separator="," close=")">
+			#{x}
+		</foreach>
+	</delete>
+	
+	<!-- 장바구니 정보 조회 -->
+	<select id="cartByNum" parameterType="int" resultType="CartDTO">
+		select * from cart where num = #{num}
+	</select>
+	
+	<insert id="orderDone" parameterType="OrderDTO">
+		insert into orderinfo
+		values (orderinfo_seq.nextval, #{userid},#{gCode}, #{gName}, #{gPrice},
+				#{gSize}, #{gColor}, #{gAmount}, #{gImage}, #{orderName}, #{post},
+				#{addr1}, #{addr2}, #{phone}, #{payMethod}, sysdate)
+	</insert>
+
+</mapper>
